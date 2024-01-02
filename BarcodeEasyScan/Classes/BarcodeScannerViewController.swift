@@ -11,6 +11,10 @@ public protocol ScanBarcodeDelegate {
     func userDidScanWith(barcode: String)
 }
 
+public protocol CancelButtonClicked{
+    func cancel()
+}
+
 public class BarcodeScannerViewController: UIViewController {
     private let supportedCodeTypes = [AVMetadataObject.ObjectType.upce,
                                       AVMetadataObject.ObjectType.code39,
@@ -34,6 +38,8 @@ public class BarcodeScannerViewController: UIViewController {
     private var scanlineStopY: CGFloat = 0
     private var topBottomMargin: CGFloat = 80
     private var scanLine: UIView = UIView()
+    public var delegate1 : CancelButtonClicked? = nil
+    
     private lazy var topbar : UIView! = {
         let view = UIView()
         view.backgroundColor = UIColor.black
@@ -152,7 +158,7 @@ public class BarcodeScannerViewController: UIViewController {
         headerLabel.heightAnchor.constraint(equalToConstant: 80.0).isActive = true
         
         cancelButton.translatesAutoresizingMaskIntoConstraints = false
-        cancelButton.centerYAnchor.constraint(equalTo: topbar.centerYAnchor, constant:0).isActive = true
+        cancelButton.centerYAnchor.constraint(equalTo: topbar.centerYAnchor, constant:20).isActive = true
         cancelButton.widthAnchor.constraint(equalToConstant: 70.0).isActive = true
         cancelButton.heightAnchor.constraint(equalToConstant: 70.0).isActive = true
         cancelButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant:10).isActive = true
@@ -161,9 +167,11 @@ public class BarcodeScannerViewController: UIViewController {
     @objc private func playButtonClicked() {
         if #available(iOS 10.0, *) {
             self.dismiss(animated: true) {
+                self.delegate1?.cancel()
             }
         } else {
             self.dismiss(animated: true) {
+                self.delegate1?.cancel()
             }
         }
     }
